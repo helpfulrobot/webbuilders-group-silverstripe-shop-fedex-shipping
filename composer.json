@@ -3,7 +3,7 @@
     "description": "FedEx Shipping module",
     "keywords": ["shop", "fedex", "shipping", "silverstripe"],
     "type": "silverstripe-module",
-    "target-dir": "silverstripe_shop_fedex_shipping",
+    "target-dir": "shop_fedex_shipping",
     "homepage": "https://github.com/tylerkidd/silverstripe-shop-fedex-shipping/",
     "license": "BSD-3-Clause",
     "authors": [{
