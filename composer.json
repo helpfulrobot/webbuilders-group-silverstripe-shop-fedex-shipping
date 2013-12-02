@@ -10,6 +10,9 @@
         "name": "Tyler Kidd",
         "email": "tyler@adaircreative.com"
     }],
+	"extra": {
+		"installer-name": "shop_fedex_shipping"
+	},
     "require": {
         "silverstripe/framework": ">=3.1"
     }
