@@ -94,20 +94,20 @@ class FedExShippingHelper {
         $this->timestamp  = date('c');
     }
 
-    public function setEnvironment($environment)
+    public function setEnvironment($environment, $config = false)
     {
         if($environment == 'production')
         {
             $this->development      = FALSE;
-
-	        $config = SiteConfig::config()->shipping_apis['FedEx'];
-
-	        $this->account_number = $config['AccountNumber'];
-	        $this->meter_number = $config['MeterNumber'];
+            
+            if($config){
+		        $this->account_number = $config['AccountNumber'];
+		        $this->meter_number = $config['MeterNumber'];
+		        
+		        $this->password = $config['Password'];
+		        $this->key = $config['Key'];
+	        }
 	        
-	        $this->password = $config['Password'];
-	        $this->key = $config['Key'];
-
         }
         else
             $this->development = TRUE;
@@ -460,8 +460,7 @@ class FedExShippingHelper {
 
         $this->request['RequestedShipment']['PackageCount'] = count($this->request['RequestedShipment']['RequestedPackageLineItems']);
         
-        //return $this->process('RateService', __FUNCTION__);
-        return $this->process('RateService','getRates');
+        return $this->process('RateService', __FUNCTION__);
     }
 
     /*
@@ -629,8 +628,10 @@ class FedExShippingHelper {
         {
             try
             {
-            	//Debug::dump($this->request);
-                $response = $connection->{$method}($this->request);                
+            	//Debug::dump($connection);
+                $response = $connection->{$method}($this->request);
+                
+                //Debug::dump($response);
             }
             catch (Exception $e)
             {
