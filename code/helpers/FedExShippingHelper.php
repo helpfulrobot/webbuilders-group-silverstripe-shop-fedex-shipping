@@ -502,7 +502,7 @@ class FedExShippingHelper {
     
     
     public function getPackageCount(){
-		return count($this->request['RequestedShipment']['RequestedPackageLineItems']);
+		return isset($this->request['RequestedShipment']['RequestedPackageLineItems']) ? count($this->request['RequestedShipment']['RequestedPackageLineItems']) : 0;
     }
 
     /*
