@@ -1,6 +1,6 @@
 {
     "name": "webbuilders-group/silverstripe-shop-fedex-shipping",
-    "description": "@TODO",
+    "description": "FedEx shipping modifier for BurnBright's Shop Module",
     "type": "silverstripe-module",
     "keywords": ["silverstripe", "ecommerce", "shop", "fedex", "shipping"],
     "license": "BSD-3-Clause",

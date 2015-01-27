@@ -1,5 +1,4 @@
 <?php
-//@TODO Modify form to use a dropdown for the state instead of a text input
 use FedEx\RateService;
 use FedEx\RateService\ComplexType;
 use FedEx\RateService\SimpleType;
@@ -52,22 +51,46 @@ class FedExShippingModifier extends ShippingModifier {
         $orderItems=implode(',', $this->Order()->Items()->column('ID'));
         $orderItemsCount=implode(',', $this->Order()->Items()->column('Quantity'));
         
-        if($this->Order()->ShippingAddress && $this->Order->ShippingAddress->exists()) {
-            $destination=$this->Order->ShippingAddress;
-        
-            $shippingAddress=array(
-                                    'StreetLines'=>array($destination->Address),
-                                    'City'=>$destination->City,
-                                    'StateOrProvinceCode'=>$destination->State,
-                                    'PostalCode'=>$destination->PostalCode,
-                                    'CountryCode'=>$destination->Country
-                                );
-            
-            $addrLine2=$destination->AddressLine2;
+        $shippingAddress=array();
+        $shippingAddressStr='';
+        if($this->Order()) {
+            if($this->Order()->ShippingAddress && $this->Order()->ShippingAddress->exists()) {
+                $destination=$this->Order()->ShippingAddress;
+                
+                $shippingAddress=array(
+                                        'StreetLines'=>array($destination->Address),
+                                        'City'=>$destination->City,
+                                        'StateOrProvinceCode'=>$destination->State,
+                                        'PostalCode'=>$destination->PostalCode,
+                                        'CountryCode'=>$destination->Country
+                                    );
+                
+                $addrLine2=$destination->AddressLine2;
+                
+                $shippingAddressStr=$shippingAddress;
+                $shippingAddressStr['StreetLines']=implode(' ', $shippingAddressStr['StreetLines']);
+                $shippingAddressStr=implode(',', $shippingAddressStr);
+            }else if($this->Order()->Member()->DefaultShippingAddress() && $this->Order()->Member()->DefaultShippingAddress()->exists()) {
+                $destination=$this->Order()->Member()->DefaultShippingAddress();
+                
+                $shippingAddress=array(
+                                        'StreetLines'=>array($destination->Address),
+                                        'City'=>$destination->City,
+                                        'StateOrProvinceCode'=>$destination->State,
+                                        'PostalCode'=>$destination->PostalCode,
+                                        'CountryCode'=>$destination->Country
+                                    );
+                
+                $addrLine2=$destination->AddressLine2;
+                
+                $shippingAddressStr=$shippingAddress;
+                $shippingAddressStr['StreetLines']=implode(' ', $shippingAddressStr['StreetLines']);
+                $shippingAddressStr=implode(',', $shippingAddressStr);
+            }
         }
         
         
-        if($this->Amount>0 && $orderItems.'|'.$orderItemsCount.'|'.implode(',', $shippingAddress)==Session::get('FedExShipping_'.$this->Order()->ID.'.orderitems')) {
+        if($this->Amount>0 && $orderItems.'|'.$orderItemsCount.'|'.$shippingAddressStr==Session::get('FedExShipping_'.$this->Order()->ID.'.orderhash')) {
             return $this->Amount;
         }
         
@@ -121,7 +144,7 @@ class FedExShippingModifier extends ShippingModifier {
         )));
         
         
-        //Allow extensions to modify the 
+        //Allow extensions to modify the
         $this->extend('updateRateRequest', $rateRequest);
         
         
@@ -152,7 +175,7 @@ class FedExShippingModifier extends ShippingModifier {
         }
         
         
-        Session::set('FedExShipping_'.$this->Order()->ID.'.orderitems', $orderItems.'|'.$orderItemsCount.'|'.implode(',', $shippingAddress));
+        Session::set('FedExShipping_'.$this->Order()->ID.'.orderhash', $orderItems.'|'.$orderItemsCount.'|'.$shippingAddressStr);
         
         return $this->Amount;
     }
@@ -221,6 +244,30 @@ class FedExShippingModifier extends ShippingModifier {
         }
         
         return $address;
+    }
+    
+    /**
+     * ID for the cart table
+     * @return {string}
+     */
+    public function getTableID() {
+        return 'FedExShippingModifier';
+    }
+    
+    /**
+     * ID for the title in the cart table
+     * @return {string}
+     */
+    public function getTableTitleID() {
+        return 'FedExShippingModifier_Title';
+    }
+    
+    /**
+     * ID for the value in the cart table
+     * @return {string}
+     */
+    public function getTableTotalID() {
+        return 'FedExShippingModifier_Total';
     }
 }
 ?>

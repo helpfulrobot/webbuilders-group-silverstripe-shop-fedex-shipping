@@ -1,0 +1,11 @@
+---
+Name: fedex_shipping
+After: 'framework/*', 'cms/*', 'shop/*'
+---
+Address:
+    extensions:
+        - "FedExStateProvinceExtension"
+
+CheckoutPage_Controller:
+    extensions:
+        - "FedExOrderFormExtension"
