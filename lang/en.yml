@@ -29,7 +29,7 @@ en:
         SAME_DAY: "Same Day"
         SAME_DAY_CITY: "Same Day City"
         SMART_POST: "Smart Post"
-        STANDARD_OVERNIGHT: "Standatd Overnight"
+        STANDARD_OVERNIGHT: "Standard Overnight"
     FedExStateProvinceExtension:
         CANADA: "Canada"
         CA_AB: "Alberta"
