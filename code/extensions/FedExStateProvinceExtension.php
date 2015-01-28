@@ -79,7 +79,7 @@ class FedExStateProvinceExtension extends Extension {
                                                                                             'PE'=>_t('FedExStateProvinceExtension.CA_PE', '_Prince Edward Island'),
                                                                                             'QC'=>_t('FedExStateProvinceExtension.CA_QC', '_Quebec'),
                                                                                             'SK'=>_t('FedExStateProvinceExtension.CA_SK', '_Saskatchewan'),
-                                                                                            'YT '=>_t('FedExStateProvinceExtension.CA_YT ', '_Yukon')
+                                                                                            'YT'=>_t('FedExStateProvinceExtension.CA_YT', '_Yukon')
                                                                                         ),
                                                                                         ''=>_t('FedExStateProvinceExtension.OTHER', '_Other')
                                                                                     ));
