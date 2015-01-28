@@ -84,11 +84,13 @@ class FedExStateProvinceExtension extends Extension {
                                                                                         ''=>_t('FedExStateProvinceExtension.OTHER', '_Other')
                                                                                     ));
             $newStateField->setDescription=$stateField->getDescription();
+            $newStateField->setForm($stateField->getForm());
             
             $fields->replaceField('State', $newStateField);
             
             $fields->insertAfter($otherState=new TextField('OtherState', _t('FedExStateProvinceExtension.OTHER_STATE', '_Other State'), null, 200), 'State');
             $otherState->setDescription(_t('FedExStateProvinceExtension.OTHER_DESC', '_If you chose other as your state please place it here'));
+            $otherState->setForm($stateField->getForm());
         }
     }
 }

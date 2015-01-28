@@ -5,7 +5,7 @@ class FedExOrderFormExtension extends Extension {
      * @param {Form} $form Form to update
      */
     public function updateOrderForm(Form $form) {
-        $form->Actions()->insertBefore(new FormAction('doUpdateShipping', _t('FedExOrderFormExtension.UPDATE_SHIPPING', '_Update Shipping')), 'action_checkoutSubmit');
+        $form->Actions()->insertBefore(FormAction::create('doUpdateShipping', _t('FedExOrderFormExtension.UPDATE_SHIPPING', '_Update Shipping'))->setForm($form), 'action_checkoutSubmit');
     }
     
     /**
