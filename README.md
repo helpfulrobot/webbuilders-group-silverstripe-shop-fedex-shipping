@@ -49,6 +49,7 @@ FedExShippingModifier:
     origin_postal_code: "ZIP_POSTAL" #Shipper's postal code/zip code
     origin_country_code: "COUNTRY" #Your 2 character country code for the shipper's address
     service_type: "FEDEX_GROUND" #The service type you want to retrieve quotes for, see bellow for more information
+    default_charge: 0 #Default amount to charge for shipping should the api return an invalid response
 ```
 
 For the ``service_type`` configuration option you need to pick from one of the service types bellow.
