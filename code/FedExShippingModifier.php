@@ -4,7 +4,8 @@ use FedEx\RateService\ComplexType;
 use FedEx\RateService\SimpleType;
 use FedEx\RateService\SimpleType\ReturnedRateType;
 
-class FedExShippingModifier extends ShippingModifier {
+class FedExShippingModifier extends ShippingModifier
+{
     private static $service_type="FEDEX_GROUND";
     private static $default_charge=0;
     
@@ -31,7 +32,8 @@ class FedExShippingModifier extends ShippingModifier {
      * Produces a title for use in templates.
      * @return string
      */
-    public function TableTitle() {
+    public function TableTitle()
+    {
         $title=_t('FedExShippingModifier.SINGULARNAME', '_Shipping ({method})', array('method'=>_t('FedExShippingModifier.'.self::config()->service_type)));
         
         $this->extend('updateTableTitle', $title);
@@ -42,8 +44,9 @@ class FedExShippingModifier extends ShippingModifier {
      * Calculates the value of the fedex shipping modifier. If the order information has changed or is not present in the session a call is made to the api to request the rates.
      * @return {float} Cost of the shipping
      */
-    public function value($subtotal=0) {
-        if($this->Order()->Items()->count()==0) {
+    public function value($subtotal=0)
+    {
+        if ($this->Order()->Items()->count()==0) {
             return 0;
         }
         
@@ -53,8 +56,8 @@ class FedExShippingModifier extends ShippingModifier {
         
         $shippingAddress=array();
         $shippingAddressStr='';
-        if($this->Order()) {
-            if($this->Order()->ShippingAddress && $this->Order()->ShippingAddress->exists()) {
+        if ($this->Order()) {
+            if ($this->Order()->ShippingAddress && $this->Order()->ShippingAddress->exists()) {
                 $destination=$this->Order()->ShippingAddress;
                 
                 $shippingAddress=array(
@@ -70,7 +73,7 @@ class FedExShippingModifier extends ShippingModifier {
                 $shippingAddressStr=$shippingAddress;
                 $shippingAddressStr['StreetLines']=implode(' ', $shippingAddressStr['StreetLines']);
                 $shippingAddressStr=implode(',', $shippingAddressStr);
-            }else if($this->Order()->Member()->DefaultShippingAddress() && $this->Order()->Member()->DefaultShippingAddress()->exists()) {
+            } elseif ($this->Order()->Member()->DefaultShippingAddress() && $this->Order()->Member()->DefaultShippingAddress()->exists()) {
                 $destination=$this->Order()->Member()->DefaultShippingAddress();
                 
                 $shippingAddress=array(
@@ -90,7 +93,7 @@ class FedExShippingModifier extends ShippingModifier {
         }
         
         
-        if($this->Amount>0 && $orderItems.'|'.$orderItemsCount.'|'.$shippingAddressStr==Session::get('FedExShipping_'.$this->Order()->ID.'.orderhash')) {
+        if ($this->Amount>0 && $orderItems.'|'.$orderItemsCount.'|'.$shippingAddressStr==Session::get('FedExShipping_'.$this->Order()->ID.'.orderhash')) {
             return $this->Amount;
         }
         
@@ -99,14 +102,14 @@ class FedExShippingModifier extends ShippingModifier {
         $this->Amount=self::config()->default_charge;
         
         
-        if(!isset($destination)) {
+        if (!isset($destination)) {
             return $this->Amount;
         }
         
         
         $packageItems=array();
-        foreach($this->Order()->Items() as $item) {
-            if($item instanceof Product_OrderItem) {
+        foreach ($this->Order()->Items() as $item) {
+            if ($item instanceof Product_OrderItem) {
                 $packageItems[]=new ComplexType\RequestedPackageLineItem(array(
                         'Weight'=>new ComplexType\Weight(array(
                                 'Units'=>new SimpleType\WeightUnits(SimpleType\WeightUnits::_KG),
@@ -150,20 +153,20 @@ class FedExShippingModifier extends ShippingModifier {
         
         //Initialize the request
         $validateShipmentRequest=new RateService\Request();
-        if(!$this->config()->test_mode) {
+        if (!$this->config()->test_mode) {
             $validateShipmentRequest->getSoapClient()->__setLocation('https://ws.fedex.com:443/web-services/rate');
         }
         
         
         //Call the api and look through the response
         $response=$validateShipmentRequest->getGetRatesReply($rateRequest);
-        if(property_exists($response, 'RateReplyDetails') && count($response->RateReplyDetails)>0) {
-            foreach($response->RateReplyDetails as $rates) {
-                if($rates->ServiceType==self::config()->service_type) {
-                    foreach($rates->RatedShipmentDetails as $rate) {
-                        if(property_exists($rate, 'TotalNetCharge')) {
+        if (property_exists($response, 'RateReplyDetails') && count($response->RateReplyDetails)>0) {
+            foreach ($response->RateReplyDetails as $rates) {
+                if ($rates->ServiceType==self::config()->service_type) {
+                    foreach ($rates->RatedShipmentDetails as $rate) {
+                        if (property_exists($rate, 'TotalNetCharge')) {
                             $charge=$rate->TotalNetCharge;
-                            if($charge->Currency!=ShopConfig::get_base_currency() && property_exists($rate, 'CurrencyExchangeRate')) {
+                            if ($charge->Currency!=ShopConfig::get_base_currency() && property_exists($rate, 'CurrencyExchangeRate')) {
                                 $charge->Amount=((1-$rate->CurrencyExchangeRate->Rate)+1)*$charge->Amount;
                             }
                             
@@ -184,7 +187,8 @@ class FedExShippingModifier extends ShippingModifier {
      * Generates the base RateRequest object
      * @return {RateRequest}
      */
-    protected function getRateRequestAPI() {
+    protected function getRateRequestAPI()
+    {
         $rateRequest=new ComplexType\RateRequest();
         
         //Set Authentication data
@@ -229,7 +233,8 @@ class FedExShippingModifier extends ShippingModifier {
      * Retrieves the origin address based on the configuration options
      * @return {array} Origin address to be sent to the api
      */
-    protected function getOriginAddress() {
+    protected function getOriginAddress()
+    {
         $address=array(
                         'StreetLines' => array($this->config()->origin_address),
                         'City'=>$this->config()->origin_city,
@@ -239,7 +244,7 @@ class FedExShippingModifier extends ShippingModifier {
                     );
         
         $addressLine2=$this->config()->origin_address_line2;
-        if(!empty($addressLine2)) {
+        if (!empty($addressLine2)) {
             $address['StreetLines'][]=$addressLine2;
         }
         
@@ -250,7 +255,8 @@ class FedExShippingModifier extends ShippingModifier {
      * ID for the cart table
      * @return {string}
      */
-    public function getTableID() {
+    public function getTableID()
+    {
         return 'FedExShippingModifier';
     }
     
@@ -258,7 +264,8 @@ class FedExShippingModifier extends ShippingModifier {
      * ID for the title in the cart table
      * @return {string}
      */
-    public function getTableTitleID() {
+    public function getTableTitleID()
+    {
         return 'FedExShippingModifier_Title';
     }
     
@@ -266,8 +273,8 @@ class FedExShippingModifier extends ShippingModifier {
      * ID for the value in the cart table
      * @return {string}
      */
-    public function getTableTotalID() {
+    public function getTableTotalID()
+    {
         return 'FedExShippingModifier_Total';
     }
 }
-?>

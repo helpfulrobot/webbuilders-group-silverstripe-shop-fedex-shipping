@@ -1,5 +1,6 @@
 <?php
-class FedExStateProvinceExtension extends Extension {
+class FedExStateProvinceExtension extends Extension
+{
     private static $db=array(
                             'OtherState'=>'Varchar(200)'
                         );
@@ -8,9 +9,10 @@ class FedExStateProvinceExtension extends Extension {
      * Updates the form fields for address'es to use a dropdown for the state and an additional field for the other state
      * @param {FieldList} $fields Fields to modify
      */
-    public function updateFormFields(FieldList $fields) {
+    public function updateFormFields(FieldList $fields)
+    {
         $stateField=$fields->dataFieldByName('State');
-        if($stateField) {
+        if ($stateField) {
             $newStateField=new GroupedDropdownField('State', $stateField->Title, array(
                                                                                         _t('FedExStateProvinceExtension.UNITED_STATES', '_United States')=>array(
                                                                                             'AL'=>_t('FedExStateProvinceExtension.US_AL', '_Alabama'),
@@ -94,4 +96,3 @@ class FedExStateProvinceExtension extends Extension {
         }
     }
 }
-?>
